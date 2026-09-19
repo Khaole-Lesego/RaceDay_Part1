@@ -91,3 +91,104 @@ The unique `EnrolmentId` makes the relationship one-to-one: an enrolment can hav
 | `ElevationGain` | `DECIMAL(6,2)` | NULL, CHECK >= 0 | Elevation gain in metres. |
 | `StartPoint` | `VARCHAR(150)` | NULL | Route start. |
 | `EndPoint` | `VARCHAR(150)` | NULL | Route end. |
+
+## Relationship and cardinality matrix
+
+| # | Parent | Child | Cardinality | Foreign key / business meaning |
+|---:|---|---|---|---|
+| 1 | User (Organiser) | Event | 1 : many | `Event.OrganiserId`; one organiser can create many events. |
+| 2 | EventType | Event | 1 : many | `Event.EventTypeId`; one lookup type applies to many events. |
+| 3 | Event | Category | 1 : many | `Category.EventId`; an event has one or more planned categories. |
+| 4 | Event | RouteInfo | 1 : 1 | `RouteInfo.EventId` is unique; each planned event has one route-information record. |
+| 5 | User (Participant) | Enrolment | 1 : many | `Enrolment.ParticipantId`; a participant can enter many events. |
+| 6 | Event | Enrolment | 1 : many | `Enrolment.EventId`; many participants can enter an event. |
+| 7 | Category | Enrolment | 1 : many | `Enrolment.CategoryId`; many entries may select a category. |
+| 8 | Enrolment | Result | 1 : 0..1 | `Result.EnrolmentId` is unique; results are absent until captured. |
+
+`User` appears at both ends of different relationships because one account table stores both roles. The SQL foreign keys ensure a valid user exists. API-level authorization in Part 2 must ensure that an `OrganiserId` references an organiser, a `ParticipantId` references a participant, and the authenticated organiser owns any event they modify.
+
+The database can enforce "at most one" `RouteInfo` record with a unique foreign key. The API will create the required route record in the same event-creation workflow, thereby enforcing the business rule of one route record for each planned event. This avoids a circular foreign-key design.
+
+## Mermaid source
+
+```mermaid
+erDiagram
+    USER ||--o{ EVENT : organises
+    EVENTTYPE ||--o{ EVENT : classifies
+    EVENT ||--|{ CATEGORY : offers
+    EVENT ||--|| ROUTEINFO : has
+    USER ||--o{ ENROLMENT : enters
+    EVENT ||--o{ ENROLMENT : receives
+    CATEGORY ||--o{ ENROLMENT : selected_for
+    ENROLMENT ||--o| RESULT : produces
+
+    USER {
+        int UserId PK
+        varchar FullName
+        varchar Email UK
+        varchar PasswordHash
+        varchar Role
+        varchar ContactNumber
+        varchar ProfilePictureUrl
+        datetime CreatedAt
+    }
+    EVENTTYPE {
+        int EventTypeId PK
+        varchar TypeName UK
+    }
+    EVENT {
+        int EventId PK
+        int OrganiserId FK
+        int EventTypeId FK
+        varchar Name
+        varchar Description
+        datetime EventDate
+        varchar Location
+        decimal Distance
+        varchar BannerImageUrl
+        datetime CreatedAt
+    }
+    CATEGORY {
+        int CategoryId PK
+        int EventId FK
+        varchar Name
+        int MinAge
+        int MaxAge
+        decimal DistanceKm
+    }
+    ENROLMENT {
+        int EnrolmentId PK
+        int ParticipantId FK
+        int EventId FK
+        int CategoryId FK
+        datetime EnrolmentDate
+        varchar Status
+    }
+    RESULT {
+        int ResultId PK
+        int EnrolmentId FK_UK
+        time FinishTime
+        int FinishPosition
+        datetime CapturedAt
+    }
+    ROUTEINFO {
+        int RouteInfoId PK
+        int EventId FK_UK
+        varchar RouteMapUrl
+        decimal ElevationGain
+        varchar StartPoint
+        varchar EndPoint
+    }
+```
+
+## Implementation alignment checklist
+
+- The ERD, SQL script, and endpoint plan use the same singular table/resource names and identifiers.
+- `BannerImageUrl` and `ProfilePictureUrl` are intentionally nullable until Part 3 upload functionality exists.
+- The `EventType` lookup is seeded with exactly Run, Walk, and Cycle.
+- The category selected in an enrolment must belong to the supplied event. This cross-table rule is validated by the API because independent foreign keys cannot prove it.
+- Roles, ownership, enrolment status transitions, and result capture are API business rules, not substitutes for the keys and constraints defined in SQL.
+
+## Reference
+
+Troelsen, A. and Japikse, P. (2021) *Pro C# 10 with .NET 6: Foundational principles and practices in programming*. 11th edn. Berkeley, CA: Apress.
