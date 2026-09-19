@@ -93,3 +93,49 @@ CREATE TABLE dbo.Category
     CONSTRAINT CK_Category_HasAgeOrDistance CHECK (MinAge IS NOT NULL OR MaxAge IS NOT NULL OR DistanceKm IS NOT NULL)
 );
 GO
+
+CREATE TABLE dbo.Enrolment
+(
+    EnrolmentId         INT IDENTITY(1,1) NOT NULL,
+    ParticipantId       INT NOT NULL,
+    EventId             INT NOT NULL,
+    CategoryId          INT NOT NULL,
+    EnrolmentDate       DATETIME NOT NULL CONSTRAINT DF_Enrolment_EnrolmentDate DEFAULT (GETDATE()),
+    [Status]            VARCHAR(20) NOT NULL CONSTRAINT DF_Enrolment_Status DEFAULT ('Pending'),
+    CONSTRAINT PK_Enrolment PRIMARY KEY (EnrolmentId),
+    CONSTRAINT FK_Enrolment_Participant FOREIGN KEY (ParticipantId) REFERENCES dbo.[User](UserId),
+    CONSTRAINT FK_Enrolment_Event FOREIGN KEY (EventId) REFERENCES dbo.[Event](EventId),
+    CONSTRAINT FK_Enrolment_Category FOREIGN KEY (CategoryId) REFERENCES dbo.Category(CategoryId),
+    CONSTRAINT UQ_Enrolment_Participant_Event UNIQUE (ParticipantId, EventId),
+    CONSTRAINT CK_Enrolment_Status CHECK ([Status] IN ('Pending', 'Confirmed', 'Cancelled'))
+);
+GO
+
+CREATE TABLE dbo.Result
+(
+    ResultId            INT IDENTITY(1,1) NOT NULL,
+    EnrolmentId         INT NOT NULL,
+    FinishTime          TIME(0) NULL,
+    FinishPosition      INT NULL,
+    CapturedAt          DATETIME NULL,
+    CONSTRAINT PK_Result PRIMARY KEY (ResultId),
+    CONSTRAINT FK_Result_Enrolment FOREIGN KEY (EnrolmentId) REFERENCES dbo.Enrolment(EnrolmentId),
+    CONSTRAINT UQ_Result_Enrolment UNIQUE (EnrolmentId),
+    CONSTRAINT CK_Result_FinishPosition CHECK (FinishPosition IS NULL OR FinishPosition > 0)
+);
+GO
+
+CREATE TABLE dbo.RouteInfo
+(
+    RouteInfoId         INT IDENTITY(1,1) NOT NULL,
+    EventId             INT NOT NULL,
+    RouteMapUrl         VARCHAR(255) NULL,
+    ElevationGain       DECIMAL(6,2) NULL,
+    StartPoint          VARCHAR(150) NULL,
+    EndPoint            VARCHAR(150) NULL,
+    CONSTRAINT PK_RouteInfo PRIMARY KEY (RouteInfoId),
+    CONSTRAINT FK_RouteInfo_Event FOREIGN KEY (EventId) REFERENCES dbo.[Event](EventId),
+    CONSTRAINT UQ_RouteInfo_Event UNIQUE (EventId),
+    CONSTRAINT CK_RouteInfo_ElevationGain CHECK (ElevationGain IS NULL OR ElevationGain >= 0)
+);
+GO
