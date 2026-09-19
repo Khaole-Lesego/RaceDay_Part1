@@ -57,3 +57,15 @@ The routes use resource-oriented nouns and HTTP methods consistently so the Part
 | GET | `/api/results/{resultId}` | Returns one result when it belongs to the caller or to their event. | Participant (own) or Organiser (owner) | None | `200 OK` - result detail; `401`; `403`; `404`. |
 | POST | `/api/results` | Captures a finish time and position for an enrolment in an owned event. | Organiser and owner | Result create | `201 Created` - result; `400` invalid time/position or unconfirmed enrolment; `401`; `403`; `404`; `409` result already exists. |
 | PUT | `/api/results/{resultId}` | Corrects a result for an enrolment in an owned event. | Organiser and owner | Result update | `200 OK` - updated result; `400`; `401`; `403`; `404`. |
+
+## Planned response shapes
+
+Successful collection endpoints return a JSON array or a paged wrapper such as `{ "items": [...], "totalCount": 3 }`. Single-resource responses return the resource and its relevant nested data. Password hashes and raw passwords are never returned. Deletion uses `204 No Content` rather than returning the deleted record.
+
+## Part 2 test alignment
+
+The test suite should demonstrate a successful and unsuccessful register/login flow; an organiser creating, updating, and deleting only their own event; a participant being rejected from organiser-only routes; successful participant enrolment; duplicate-enrolment rejection; and participant visibility limited to personal results. Swagger descriptions should use this plan's routes and statuses.
+
+## Reference
+
+Troelsen, A. and Japikse, P. (2021) *Pro C# 10 with .NET 6: Foundational principles and practices in programming*. 11th edn. Berkeley, CA: Apress.
