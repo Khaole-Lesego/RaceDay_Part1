@@ -1,0 +1,33 @@
+﻿name: Validate Part 1 Planning Artefacts
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate-structure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Verify required planning files
+        shell: bash
+        run: |
+          required_files=(
+            "docs/RaceDay_ERD.png"
+            "docs/ERD_Specification.md"
+            "docs/API_Endpoint_Plan.md"
+            "docs/RaceDay_Database_Script.sql"
+            "README.md"
+          )
+
+          test -d docs || { echo "Missing required docs directory."; exit 1; }
+
+          for file in "${required_files[@]}"; do
+            if [[ ! -s "$file" ]]; then
+              echo "Missing or empty required file: $file"
+              exit 1
+            fi
+            echo "Validated: $file"
+          done
