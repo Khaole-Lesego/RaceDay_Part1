@@ -20,3 +20,25 @@ The design separates repeating concepts into their own relations and uses an ass
 | `ContactNumber` | `VARCHAR(20)` | NULL | Optional contact number. |
 | `ProfilePictureUrl` | `VARCHAR(255)` | NULL | Part 3 Blob Storage URL. |
 | `CreatedAt` | `DATETIME` | NN, DEFAULT `GETDATE()` | Account creation timestamp. |
+
+### 2. EventType
+
+| Attribute | SQL Server type | Key / constraint | Description |
+|---|---|---|---|
+| `EventTypeId` | `INT IDENTITY(1,1)` | PK | Lookup identifier. |
+| `TypeName` | `VARCHAR(50)` | NN, UQ | Event type: Run, Walk, or Cycle. |
+
+### 3. Event
+
+| Attribute | SQL Server type | Key / constraint | Description |
+|---|---|---|---|
+| `EventId` | `INT IDENTITY(1,1)` | PK | Event identifier. |
+| `OrganiserId` | `INT` | FK -> `User.UserId`, NN | User accountable for the event. |
+| `EventTypeId` | `INT` | FK -> `EventType.EventTypeId`, NN | Run, Walk, or Cycle. |
+| `Name` | `VARCHAR(150)` | NN | Event name. |
+| `Description` | `VARCHAR(1000)` | NULL | Optional event details. |
+| `EventDate` | `DATETIME` | NN | Scheduled date and start time. |
+| `Location` | `VARCHAR(150)` | NN | Venue or starting location. |
+| `Distance` | `DECIMAL(6,2)` | NN, CHECK > 0 | Distance in kilometres. |
+| `BannerImageUrl` | `VARCHAR(255)` | NULL | Part 3 Blob Storage URL for an event banner. |
+| `CreatedAt` | `DATETIME` | NN, DEFAULT `GETDATE()` | Event-record creation timestamp. |
