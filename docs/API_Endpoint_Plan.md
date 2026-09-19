@@ -35,3 +35,9 @@ The routes use resource-oriented nouns and HTTP methods consistently so the Part
 | GET | `/api/users/profile` | Returns the current user's profile. | Any authenticated user | None | `200 OK` - profile; `401` unauthenticated. |
 | PUT | `/api/users/profile` | Updates the current user's permitted profile fields. | Any authenticated user | Profile update | `200 OK` - updated profile; `400` invalid data; `401` unauthenticated. |
 | GET | `/api/event-types` | Returns Run, Walk, and Cycle lookup values. | None (public) | None | `200 OK` - event-type collection. |
+| GET | `/api/events` | Lists events; supports optional `eventTypeId`, `fromDate`, `toDate`, and `location` query filters. | None (public) | None | `200 OK` - filtered event summaries; `400` invalid filter values. |
+| GET | `/api/events/{eventId}` | Returns one event with its type, categories, route information, and public detail. | None (public) | None | `200 OK` - event detail; `404` event not found. |
+| POST | `/api/events` | Creates an event owned by the logged-in organiser. | Organiser | Event create | `201 Created` - event; `400` invalid fields/type/date; `401`; `403`. |
+| PUT | `/api/events/{eventId}` | Updates an event owned by the logged-in organiser. | Organiser and owner | Event update | `200 OK` - updated event; `400`; `401`; `403`; `404`. |
+| DELETE | `/api/events/{eventId}` | Deletes an owned event that has no dependent enrolments, or reports the conflict. | Organiser and owner | None | `204 No Content`; `401`; `403`; `404`; `409` dependent data exists. |
+| GET | `/api/events/mine` | Lists events created by the current organiser, with enrolment counts. | Organiser | None | `200 OK` - organiser's event collection; `401`; `403`. |
