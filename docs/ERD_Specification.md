@@ -42,3 +42,29 @@ The design separates repeating concepts into their own relations and uses an ass
 | `Distance` | `DECIMAL(6,2)` | NN, CHECK > 0 | Distance in kilometres. |
 | `BannerImageUrl` | `VARCHAR(255)` | NULL | Part 3 Blob Storage URL for an event banner. |
 | `CreatedAt` | `DATETIME` | NN, DEFAULT `GETDATE()` | Event-record creation timestamp. |
+
+### 4. Category
+
+| Attribute | SQL Server type | Key / constraint | Description |
+|---|---|---|---|
+| `CategoryId` | `INT IDENTITY(1,1)` | PK | Category identifier. |
+| `EventId` | `INT` | FK -> `Event.EventId`, NN | Event to which the category belongs. |
+| `Name` | `VARCHAR(100)` | NN | E.g. Senior, Under 20, 10 km. |
+| `MinAge` | `INT` | NULL, CHECK >= 0 | Optional lower age bound. |
+| `MaxAge` | `INT` | NULL, CHECK >= `MinAge` | Optional upper age bound. |
+| `DistanceKm` | `DECIMAL(6,2)` | NULL, CHECK > 0 | Optional category distance in kilometres, for distance-based categories (e.g. 10 km, 21 km). |
+
+`(EventId, Name)` is unique so an event cannot define the same category twice. A category must supply at least one of `MinAge`, `MaxAge`, or `DistanceKm`, since the brief defines categories as age- or distance-based. A category `DistanceKm` may legitimately differ from its parent event `Distance`, since one event can offer more than one distance option (e.g. a family 5 km alongside the event headline 10 km).
+
+### 5. Enrolment
+
+| Attribute | SQL Server type | Key / constraint | Description |
+|---|---|---|---|
+| `EnrolmentId` | `INT IDENTITY(1,1)` | PK | Event-entry identifier. |
+| `ParticipantId` | `INT` | FK -> `User.UserId`, NN | Participant who entered. |
+| `EventId` | `INT` | FK -> `Event.EventId`, NN | Entered event. |
+| `CategoryId` | `INT` | FK -> `Category.CategoryId`, NN | Category selected on entry. |
+| `EnrolmentDate` | `DATETIME` | NN, DEFAULT `GETDATE()` | Entry timestamp. |
+| `Status` | `VARCHAR(20)` | NN, DEFAULT `Pending`, CHECK | Pending, Confirmed, or Cancelled. |
+
+`(ParticipantId, EventId)` is unique so a participant cannot enter the same event more than once.
