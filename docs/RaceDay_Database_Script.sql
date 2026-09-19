@@ -55,3 +55,41 @@ CREATE TABLE dbo.EventType
     CONSTRAINT CK_EventType_TypeName CHECK (TypeName IN ('Run', 'Walk', 'Cycle'))
 );
 GO
+
+CREATE TABLE dbo.[Event]
+(
+    EventId             INT IDENTITY(1,1) NOT NULL,
+    OrganiserId         INT NOT NULL,
+    EventTypeId         INT NOT NULL,
+    [Name]              VARCHAR(150) NOT NULL,
+    [Description]       VARCHAR(1000) NULL,
+    EventDate           DATETIME NOT NULL,
+    [Location]          VARCHAR(150) NOT NULL,
+    [Distance]          DECIMAL(6,2) NOT NULL,
+    BannerImageUrl      VARCHAR(255) NULL,
+    CreatedAt           DATETIME NOT NULL CONSTRAINT DF_Event_CreatedAt DEFAULT (GETDATE()),
+    CONSTRAINT PK_Event PRIMARY KEY (EventId),
+    CONSTRAINT FK_Event_Organiser FOREIGN KEY (OrganiserId) REFERENCES dbo.[User](UserId),
+    CONSTRAINT FK_Event_EventType FOREIGN KEY (EventTypeId) REFERENCES dbo.EventType(EventTypeId),
+    CONSTRAINT CK_Event_Distance CHECK ([Distance] > 0)
+);
+GO
+
+CREATE TABLE dbo.Category
+(
+    CategoryId          INT IDENTITY(1,1) NOT NULL,
+    EventId             INT NOT NULL,
+    [Name]              VARCHAR(100) NOT NULL,
+    MinAge              INT NULL,
+    MaxAge              INT NULL,
+    DistanceKm          DECIMAL(6,2) NULL,
+    CONSTRAINT PK_Category PRIMARY KEY (CategoryId),
+    CONSTRAINT FK_Category_Event FOREIGN KEY (EventId) REFERENCES dbo.[Event](EventId),
+    CONSTRAINT UQ_Category_Event_Name UNIQUE (EventId, [Name]),
+    CONSTRAINT CK_Category_MinAge CHECK (MinAge IS NULL OR MinAge >= 0),
+    CONSTRAINT CK_Category_MaxAge CHECK (MaxAge IS NULL OR MaxAge >= 0),
+    CONSTRAINT CK_Category_AgeRange CHECK (MinAge IS NULL OR MaxAge IS NULL OR MaxAge >= MinAge),
+    CONSTRAINT CK_Category_DistanceKm CHECK (DistanceKm IS NULL OR DistanceKm > 0),
+    CONSTRAINT CK_Category_HasAgeOrDistance CHECK (MinAge IS NOT NULL OR MaxAge IS NOT NULL OR DistanceKm IS NOT NULL)
+);
+GO
