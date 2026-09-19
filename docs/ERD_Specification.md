@@ -68,3 +68,26 @@ The design separates repeating concepts into their own relations and uses an ass
 | `Status` | `VARCHAR(20)` | NN, DEFAULT `Pending`, CHECK | Pending, Confirmed, or Cancelled. |
 
 `(ParticipantId, EventId)` is unique so a participant cannot enter the same event more than once.
+
+### 6. Result
+
+| Attribute | SQL Server type | Key / constraint | Description |
+|---|---|---|---|
+| `ResultId` | `INT IDENTITY(1,1)` | PK | Result identifier. |
+| `EnrolmentId` | `INT` | FK -> `Enrolment.EnrolmentId`, NN, UQ | Enrolment being scored. |
+| `FinishTime` | `TIME(0)` | NULL | Recorded elapsed finish time. |
+| `FinishPosition` | `INT` | NULL, CHECK > 0 | Overall finishing position. |
+| `CapturedAt` | `DATETIME` | NULL | When an organiser captured the result. |
+
+The unique `EnrolmentId` makes the relationship one-to-one: an enrolment can have at most one result.
+
+### 7. RouteInfo
+
+| Attribute | SQL Server type | Key / constraint | Description |
+|---|---|---|---|
+| `RouteInfoId` | `INT IDENTITY(1,1)` | PK | Route-information identifier. |
+| `EventId` | `INT` | FK -> `Event.EventId`, NN, UQ | Event served by the route. |
+| `RouteMapUrl` | `VARCHAR(255)` | NULL | Link to a route map. |
+| `ElevationGain` | `DECIMAL(6,2)` | NULL, CHECK >= 0 | Elevation gain in metres. |
+| `StartPoint` | `VARCHAR(150)` | NULL | Route start. |
+| `EndPoint` | `VARCHAR(150)` | NULL | Route end. |
