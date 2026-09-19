@@ -1,9 +1,9 @@
-# RaceDay - Event Management System
+﻿# RaceDay - Event Management System
 
 **Module:** Programming 2B (PROG6212)  
 **Assessment:** Portfolio of Evidence - Part 1: System Planning and Database  
-**Student:** _Complete before submission_  
-**Student number:** _Complete before submission_
+**Student:** Lesego Khaole  
+**Student number:** ST10455441
 
 ## Project overview
 
@@ -58,3 +58,4 @@ _To be completed before submission._
 ## References
 
 Troelsen, A. and Japikse, P. (2021) _Pro C# 10 with .NET 6: Foundational principles and practices in programming_. 11th edn. Berkeley, CA: Apress.
+
