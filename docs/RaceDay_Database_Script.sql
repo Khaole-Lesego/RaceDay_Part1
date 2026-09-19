@@ -139,3 +139,49 @@ CREATE TABLE dbo.RouteInfo
     CONSTRAINT CK_RouteInfo_ElevationGain CHECK (ElevationGain IS NULL OR ElevationGain >= 0)
 );
 GO
+
+/* Lookup values */
+INSERT INTO dbo.EventType (TypeName)
+VALUES ('Run'), ('Walk'), ('Cycle');
+GO
+
+/* Two organisers and three participants. PasswordHash values are illustrative BCrypt-format placeholders. */
+INSERT INTO dbo.[User] (FullName, Email, PasswordHash, [Role], ContactNumber, ProfilePictureUrl)
+VALUES
+    ('Thandi Mokoena', 'thandi.mokoena@raceday.co.za', '$2a$12$seededHashForThandiMokoena000000000000000000000000000000000', 'Organiser', '0825550101', NULL),
+    ('Sibusiso Dlamini', 'sibusiso.dlamini@raceday.co.za', '$2a$12$seededHashForSibusisoDlamini00000000000000000000000000000', 'Organiser', '0835550102', NULL),
+    ('Naledi Khumalo', 'naledi.khumalo@example.com', '$2a$12$seededHashForNalediKhumalo0000000000000000000000000000000', 'Participant', '0845550103', NULL),
+    ('Aiden Williams', 'aiden.williams@example.com', '$2a$12$seededHashForAidenWilliams000000000000000000000000000000000', 'Participant', '0715550104', NULL),
+    ('Zinhle Ndlovu', 'zinhle.ndlovu@example.com', '$2a$12$seededHashForZinhleNdlovu000000000000000000000000000000000', 'Participant', '0725550105', NULL);
+GO
+
+/* One completed event (2026, in the past) so it can carry real results,
+   plus two upcoming 2027 events that correctly have no results yet. */
+INSERT INTO dbo.[Event] (OrganiserId, EventTypeId, [Name], [Description], EventDate, [Location], [Distance], BannerImageUrl)
+VALUES
+    (1, 1, 'Comrades Marathon 2026', 'An iconic ultra-marathon route for experienced road runners.', '2026-06-13T05:30:00', 'Pietermaritzburg to Durban', 89.90, NULL),
+    (2, 3, 'Cape Town Cycle Tour 2027', 'A scenic timed cycle event around the Cape Peninsula.', '2027-03-14T06:00:00', 'Cape Town Civic Centre', 109.00, NULL),
+    (1, 2, 'Soweto Heritage Walk 2027', 'A community walk celebrating Soweto history and culture, offering a shorter family route alongside the main 10 km route.', '2027-09-24T07:00:00', 'Vilakazi Street, Soweto', 10.00, NULL);
+GO
+
+/* Categories may be age-based, distance-based, or both, via the nullable
+   DistanceKm column. Distance-based categories can legitimately differ
+   from the event's headline Distance (e.g. a 5 km family option inside
+   a 10 km walk event). */
+INSERT INTO dbo.Category (EventId, [Name], MinAge, MaxAge, DistanceKm)
+VALUES
+    (1, 'Senior', 20, 59, NULL),
+    (1, 'Veteran 60+', 60, NULL, NULL),
+    (2, 'Open 109 km', 18, NULL, 109.00),
+    (2, 'Veteran 50+', 50, NULL, NULL),
+    (3, 'Family 5 km', NULL, NULL, 5.00),
+    (3, 'Open 10 km', 12, NULL, 10.00);
+GO
+
+/* A single route-information record is seeded for every event. */
+INSERT INTO dbo.RouteInfo (EventId, RouteMapUrl, ElevationGain, StartPoint, EndPoint)
+VALUES
+    (1, 'https://example.org/routes/comrades-2026', 1100.00, 'Pietermaritzburg City Hall', 'Durban Kingsmead precinct'),
+    (2, 'https://example.org/routes/cycle-tour-2027', 1250.00, 'Cape Town Civic Centre', 'Cape Town Stadium precinct'),
+    (3, 'https://example.org/routes/soweto-walk-2027', 85.00, 'Vilakazi Street', 'Walter Sisulu Square');
+GO
