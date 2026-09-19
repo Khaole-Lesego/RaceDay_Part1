@@ -185,3 +185,38 @@ VALUES
     (2, 'https://example.org/routes/cycle-tour-2027', 1250.00, 'Cape Town Civic Centre', 'Cape Town Stadium precinct'),
     (3, 'https://example.org/routes/soweto-walk-2027', 85.00, 'Vilakazi Street', 'Walter Sisulu Square');
 GO
+
+/* Enrolments: two participants in the completed Comrades Marathon (event 1),
+   one each in the two upcoming events. */
+INSERT INTO dbo.Enrolment (ParticipantId, EventId, CategoryId, EnrolmentDate, [Status])
+VALUES
+    (3, 1, 1, '2026-01-10T09:15:00', 'Confirmed'),
+    (5, 1, 1, '2026-01-12T10:40:00', 'Confirmed'),
+    (4, 2, 3, '2027-01-12T14:20:00', 'Confirmed'),
+    (3, 3, 6, '2027-01-18T11:30:00', 'Pending');
+GO
+
+/* Results are captured only for the completed Comrades Marathon enrolments
+   (EnrolmentId 1 and 2). The two 2027 events have no results, because
+   they have not happened yet. */
+INSERT INTO dbo.Result (EnrolmentId, FinishTime, FinishPosition, CapturedAt)
+VALUES
+    (1, '06:12:45', 47, '2026-06-13T14:30:00'),
+    (2, '06:45:10', 89, '2026-06-13T14:45:00');
+GO
+
+/* Post-execution verification queries. */
+SELECT TABLE_NAME
+FROM INFORMATION_SCHEMA.TABLES
+WHERE TABLE_TYPE = 'BASE TABLE'
+ORDER BY TABLE_NAME;
+
+SELECT
+    (SELECT COUNT(*) FROM dbo.[User]) AS Users,
+    (SELECT COUNT(*) FROM dbo.EventType) AS EventTypes,
+    (SELECT COUNT(*) FROM dbo.[Event]) AS Events,
+    (SELECT COUNT(*) FROM dbo.Category) AS Categories,
+    (SELECT COUNT(*) FROM dbo.Enrolment) AS Enrolments,
+    (SELECT COUNT(*) FROM dbo.Result) AS Results,
+    (SELECT COUNT(*) FROM dbo.RouteInfo) AS RouteInfoRecords;
+GO
