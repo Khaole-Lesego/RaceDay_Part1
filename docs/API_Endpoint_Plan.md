@@ -41,3 +41,10 @@ The routes use resource-oriented nouns and HTTP methods consistently so the Part
 | PUT | `/api/events/{eventId}` | Updates an event owned by the logged-in organiser. | Organiser and owner | Event update | `200 OK` - updated event; `400`; `401`; `403`; `404`. |
 | DELETE | `/api/events/{eventId}` | Deletes an owned event that has no dependent enrolments, or reports the conflict. | Organiser and owner | None | `204 No Content`; `401`; `403`; `404`; `409` dependent data exists. |
 | GET | `/api/events/mine` | Lists events created by the current organiser, with enrolment counts. | Organiser | None | `200 OK` - organiser's event collection; `401`; `403`. |
+| GET | `/api/events/{eventId}/categories` | Lists categories available for an event. | None (public) | None | `200 OK` - category collection; `404` event not found. |
+| POST | `/api/events/{eventId}/categories` | Adds a category to an owned event. | Organiser and owner | Category create | `201 Created` - category; `400`; `401`; `403`; `404`; `409` duplicate category name. |
+| PUT | `/api/categories/{categoryId}` | Updates a category belonging to an owned event. | Organiser and owner | Category update | `200 OK` - updated category; `400`; `401`; `403`; `404`; `409` duplicate category name. |
+| DELETE | `/api/categories/{categoryId}` | Removes an unused category from an owned event. | Organiser and owner | None | `204 No Content`; `401`; `403`; `404`; `409` category has enrolments. |
+| GET | `/api/events/{eventId}/route-info` | Gets public route details for an event. | None (public) | None | `200 OK` - route information; `404` event or route record not found. |
+| POST | `/api/events/{eventId}/route-info` | Creates route information for an owned event. | Organiser and owner | Route create | `201 Created` - route information; `400`; `401`; `403`; `404`; `409` route already exists. |
+| PUT | `/api/events/{eventId}/route-info` | Updates route information for an owned event. | Organiser and owner | Route update | `200 OK` - updated route information; `400`; `401`; `403`; `404`. |
