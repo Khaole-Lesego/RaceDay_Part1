@@ -67,7 +67,7 @@ The workflow definition lives at [`.github/workflows/validate.yml`](.github/work
 
 The unlisted YouTube walkthrough demonstrates the planning documents, explains the ERD and endpoint plan decisions, and shows the SQL script running live in SSMS.
 
-- Part 1 planning walkthrough: \_ \_
+- Part 1 planning walkthrough: [PROG6212 Part 1 Video](https://youtu.be/GeyyuPqVkp4)
 
 ## AI usage disclosure
 
