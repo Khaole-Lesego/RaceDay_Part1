@@ -191,4 +191,6 @@ erDiagram
 
 ## Reference
 
+Satzinger, J.W., Jackson, R.B. and Burd, S.D. (2016) _Systems analysis and design in a changing world_. 7th edn. Boston, MA: Cengage Learning.
+
 Troelsen, A. and Japikse, P. (2021) *Pro C# 10 with .NET 6: Foundational principles and practices in programming*. 11th edn. Berkeley, CA: Apress.
