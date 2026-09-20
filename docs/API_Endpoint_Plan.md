@@ -68,4 +68,9 @@ The test suite should demonstrate a successful and unsuccessful register/login f
 
 ## Reference
 
-Troelsen, A. and Japikse, P. (2021) *Pro C# 10 with .NET 6: Foundational principles and practices in programming*. 11th edn. Berkeley, CA: Apress.
+Microsoft (2023) REST API Guidelines. Available at: https://github.com/microsoft/api-guidelines (Accessed: 20 September 2026).
+
+Richardson, L., Amundsen, M. and Ruby, S. (2013) RESTful Web APIs. Sebastopol, CA: O'Reilly Media.
+
+Troelsen, A. and Japikse, P. (2021) Pro C# 10 with .NET 6: Foundational principles and practices in programming. 11th edn. Berkeley, CA: Apress.
+
