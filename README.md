@@ -94,4 +94,8 @@ Microsoft (2026) _SQL Server technical documentation_. Available at: https://doc
 
 Satzinger, J.W., Jackson, R.B. and Burd, S.D. (2016) _Systems analysis and design in a changing world_. 7th edn. Boston, MA: Cengage Learning.
 
-Troelsen, A. and Japikse, P. (2021) _Pro C# 10 with .NET 6: Foundational principles and practices in programming_. 11th edn. Berkeley, CA: Apress.
+Microsoft (2023) REST API Guidelines. Available at: https://github.com/microsoft/api-guidelines (Accessed: 20 September 2026).
+
+Richardson, L., Amundsen, M. and Ruby, S. (2013) RESTful Web APIs. Sebastopol, CA: O'Reilly Media.
+
+Troelsen, A. and Japikse, P. (2021) Pro C# 10 with .NET 6: Foundational principles and practices in programming. 11th edn. Berkeley, CA: Apress.
